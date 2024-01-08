@@ -1,22 +1,51 @@
-import React from "react";
+import React, { Component } from "react";
 import "./Task.css";
 
-function Task({ status, label }) {
-  return (
-    <li class={status}>
-      <div class="view">
-        <input class="toggle" type="checkbox" />
-        <label>
-          <span class="description">{label}</span>
-          <span class="created">created 5 minutes ago</span>
-        </label>
-        <button class="icon icon-edit"></button>
-        <button class="icon icon-destroy"></button>
-      </div>
+export default class Task extends Component {
+  state = {
+    done: false,
+  };
 
-      {status === "editing" && <input type="text" class="edit" value={label} />}
-    </li>
-  );
+  toggleClick = () => {
+    this.setState(({ done }) => {
+      return { done: !done };
+    });
+  };
+
+  render() {
+    const { label, onDeleted } = this.props;
+    const { done } = this.state;
+
+    let classNames = "";
+    let isChecked = "";
+    if (done) {
+      classNames += " completed";
+      isChecked += " checked";
+    }
+
+    return (
+      <li className={classNames}>
+        <div className="view">
+          <input
+            className="toggle"
+            type="checkbox"
+            onClick={this.toggleClick}
+            checked={isChecked}
+          />
+          <label>
+            <span className="description" onClick={this.toggleClick}>
+              {label}
+            </span>
+            <span className="created">created 5 minutes ago</span>
+          </label>
+          <button className="icon icon-edit"></button>
+          <button className="icon icon-destroy" onClick={onDeleted}></button>
+        </div>
+
+        {/* {status === "editing" && (
+          <input type="text" className="edit" value={label} />
+        )} */}
+      </li>
+    );
+  }
 }
-
-export default Task;
