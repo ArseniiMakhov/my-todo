@@ -2,25 +2,14 @@ import React, { Component } from "react";
 import "./Task.css";
 
 export default class Task extends Component {
-  state = {
-    done: false,
-  };
-
-  toggleClick = () => {
-    this.setState(({ done }) => {
-      return { done: !done };
-    });
-  };
-
   render() {
-    const { label, onDeleted } = this.props;
-    const { done } = this.state;
+    const { label, onDeleted, done, onToggleDone } = this.props;
 
     let classNames = "";
     let isChecked = "";
     if (done) {
       classNames += " completed";
-      isChecked += " checked";
+      isChecked += "checked";
     }
 
     return (
@@ -29,11 +18,11 @@ export default class Task extends Component {
           <input
             className="toggle"
             type="checkbox"
-            onClick={this.toggleClick}
+            onChange={onToggleDone}
             checked={isChecked}
           />
           <label>
-            <span className="description" onClick={this.toggleClick}>
+            <span className="description" onClick={onToggleDone}>
               {label}
             </span>
             <span className="created">created 5 minutes ago</span>
