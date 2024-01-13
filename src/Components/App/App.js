@@ -68,6 +68,11 @@ export default class App extends Component {
     }
   };
 
+  clearCompleted = () => {
+    const completed = this.state.todos.filter((el) => el.done);
+    completed.map((el) => this.deleteItem(el.id));
+  };
+
   render() {
     const doneCount = this.state.todos.filter((el) => el.done).length;
     const todoCount = this.state.todos.length - doneCount;
@@ -89,6 +94,7 @@ export default class App extends Component {
             toDo={todoCount}
             onFilterChange={this.onFilterChange}
             filter={this.state.filter}
+            clearCompleted={this.clearCompleted}
           />
         </section>
       </section>
