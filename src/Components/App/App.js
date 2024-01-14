@@ -8,9 +8,9 @@ export default class App extends Component {
   maxId = 1;
   state = {
     todos: [
-      this.createTodoItem("drink cofee"),
-      this.createTodoItem("build react app"),
-      this.createTodoItem("have a lunch"),
+      this.createTodoItem("1"),
+      this.createTodoItem("2"),
+      this.createTodoItem("3"),
     ],
     filter: "all",
   };
@@ -20,6 +20,7 @@ export default class App extends Component {
       label,
       done: false,
       id: this.maxId++,
+      created: new Date(),
     };
   }
 
