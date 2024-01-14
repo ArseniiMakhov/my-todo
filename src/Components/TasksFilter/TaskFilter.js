@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./TaskFilter.css";
+import PropTypes from "prop-types";
 
 export default class TaskFilter extends Component {
   buttons = [
@@ -23,4 +24,14 @@ export default class TaskFilter extends Component {
     });
     return <ul className="filters">{buttons}</ul>;
   }
+
+  static defaultProps = {
+    filter: "all",
+    onFilterChange: () => {},
+  };
+
+  static propTypes = {
+    filter: PropTypes.string,
+    onFilterChange: PropTypes.func,
+  };
 }

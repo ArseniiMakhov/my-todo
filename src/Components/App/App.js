@@ -21,6 +21,7 @@ export default class App extends Component {
       done: false,
       id: this.maxId++,
       created: new Date(),
+      status: "",
     };
   }
 
@@ -74,6 +75,29 @@ export default class App extends Component {
     completed.map((el) => this.deleteItem(el.id));
   };
 
+  onEditClick = (id) => {
+    const idx = this.state.todos.findIndex((el) => el.id === id);
+    const item = this.state.todos[idx];
+    const editItem = { ...item, status: "edit" };
+    this.setState(({ todos }) => {
+      return {
+        todos: [...todos.slice(0, idx), editItem, ...todos.slice(idx + 1)],
+      };
+    });
+  };
+
+  onEdit = (e, id, text) => {
+    e.preventDefault();
+    const idx = this.state.todos.findIndex((el) => el.id === id);
+    const item = this.state.todos[idx];
+    const editItem = { ...item, label: text, status: "" };
+    this.setState(({ todos }) => {
+      return {
+        todos: [...todos.slice(0, idx), editItem, ...todos.slice(idx + 1)],
+      };
+    });
+  };
+
   render() {
     const doneCount = this.state.todos.filter((el) => el.done).length;
     const todoCount = this.state.todos.length - doneCount;
@@ -90,6 +114,8 @@ export default class App extends Component {
             todos={items}
             onDeleted={this.deleteItem}
             onToggleDone={this.onToggleDone}
+            onEditClick={this.onEditClick}
+            onEdit={this.onEdit}
           />
           <Footer
             toDo={todoCount}
