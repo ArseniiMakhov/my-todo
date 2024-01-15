@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-import "./Task.css";
-import { formatDistanceToNow } from "date-fns";
-import PropTypes from "prop-types";
+import React, { Component } from 'react';
+import './Task.css';
+import { formatDistanceToNow } from 'date-fns';
+import PropTypes from 'prop-types';
 
 export default class Task extends Component {
   state = {
@@ -9,41 +9,26 @@ export default class Task extends Component {
   };
 
   render() {
-    const {
-      label,
-      onDeleted,
-      done,
-      onToggleDone,
-      created,
-      status,
-      onEditClick,
-      onEdit,
-      id,
-    } = this.props;
+    const { label, onDeleted, done, onToggleDone, created, status, onEditClick, onEdit, id } = this.props;
     const timer = formatDistanceToNow(created, {
       addSuffix: true,
       includeSeconds: true,
     });
-    let classNames = "";
-    let isChecked = "";
+    let classNames = '';
+    let isChecked = '';
     if (done) {
-      classNames += " completed";
-      isChecked += "checked";
+      classNames += ' completed';
+      isChecked += 'checked';
     }
     if (status) {
-      classNames += " editing";
+      classNames += ' editing';
     }
 
     return (
       <li className={classNames}>
-        {status === "" && (
+        {status === '' && (
           <div className="view">
-            <input
-              className="toggle"
-              type="checkbox"
-              onChange={onToggleDone}
-              checked={isChecked}
-            />
+            <input className="toggle" type="checkbox" onChange={onToggleDone} checked={isChecked} />
             <label>
               <span className="description" onClick={onToggleDone}>
                 {label}
@@ -55,7 +40,7 @@ export default class Task extends Component {
           </div>
         )}
 
-        {status === "edit" && (
+        {status === 'edit' && (
           <form onSubmit={(e) => onEdit(e, id, this.state.value)}>
             <input
               type="text"
@@ -70,12 +55,12 @@ export default class Task extends Component {
   }
 
   static defaultProps = {
-    label: "",
+    label: '',
     onDeleted: () => {},
     done: false,
     onToggleDone: () => {},
     created: new Date(),
-    status: "",
+    status: '',
     onEditClick: () => {},
     onEdit: () => {},
   };

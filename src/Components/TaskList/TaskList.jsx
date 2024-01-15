@@ -1,9 +1,9 @@
-import React from 'react'
+import React from 'react';
 
-import Task from '../Task/Task'
+import Task from '../Task/Task';
 
-import './TaskList.css'
-import PropTypes from 'prop-types'
+import './TaskList.css';
+import PropTypes from 'prop-types';
 
 function TaskList({ todos, onDeleted, onToggleDone, onEditClick, onEdit }) {
   const element = todos.map((el) => {
@@ -19,7 +19,7 @@ function TaskList({ todos, onDeleted, onToggleDone, onEditClick, onEdit }) {
         id={id}
       />
     );
-  })
+  });
 
   return <ul className="todo-list">{element}</ul>;
 }

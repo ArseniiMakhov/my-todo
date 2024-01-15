@@ -20,7 +20,7 @@
     "eject": "react-scripts eject",
     "lint": "eslint ./src",
     "lint:fix": "eslint ./src --fix",
-    "format": "prettier --write './src/**/*.{ts,js,css,json}'",
+    "format": "prettier ./src --write",
     "prepare": "husky install"
   },
   "eslintConfig": {
@@ -53,6 +53,10 @@
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "husky": "^8.0.3",
+    "lint-staged": "^15.2.0",
     "prettier": "^3.2.2"
+  },
+  "lint-staged": {
+    "*.{js, jsx}": ["npm run lint:fix", "npm run format", "git add"]
   }
 }
