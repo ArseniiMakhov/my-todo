@@ -1,7 +1,7 @@
-import React from "react";
-import TaskFilter from "../TasksFilter";
-import "./Footer.css";
-import PropTypes from "prop-types";
+import React from 'react'
+import TaskFilter from '../TasksFilter'
+import './Footer.css'
+import PropTypes from 'prop-types'
 
 const Footer = ({ toDo, onFilterChange, filter, clearCompleted }) => {
   return (
@@ -18,7 +18,7 @@ const Footer = ({ toDo, onFilterChange, filter, clearCompleted }) => {
 Footer.defaultProps = {
   toDo: 0,
   onFilterChange: () => {},
-  filter: "all",
+  filter: 'all',
   clearCompleted: () => {},
 };
 

@@ -1,18 +1,14 @@
-import React, { Component } from "react";
-import Footer from "../Footer";
-import TaskList from "../TaskList";
-import NewTaskForm from "../NewTaskForm";
-import "./App.css";
+import React, { Component } from 'react';
+import Footer from '../Footer';
+import TaskList from '../TaskList';
+import NewTaskForm from '../NewTaskForm';
+import './App.css';
 
 export default class App extends Component {
   maxId = 1;
   state = {
-    todos: [
-      this.createTodoItem("1"),
-      this.createTodoItem("2"),
-      this.createTodoItem("3"),
-    ],
-    filter: "all",
+    todos: [this.createTodoItem('1'), this.createTodoItem('2'), this.createTodoItem('3')],
+    filter: 'all',
   };
 
   createTodoItem(label) {
@@ -21,7 +17,7 @@ export default class App extends Component {
       done: false,
       id: this.maxId++,
       created: new Date(),
-      status: "",
+      status: '',
     };
   }
 
@@ -59,11 +55,11 @@ export default class App extends Component {
 
   todoFilter = (items, status) => {
     switch (status) {
-      case "all":
+      case 'all':
         return items;
-      case "active":
+      case 'active':
         return items.filter((el) => !el.done);
-      case "done":
+      case 'done':
         return items.filter((el) => el.done);
       default:
         return items;
@@ -78,7 +74,7 @@ export default class App extends Component {
   onEditClick = (id) => {
     const idx = this.state.todos.findIndex((el) => el.id === id);
     const item = this.state.todos[idx];
-    const editItem = { ...item, status: "edit" };
+    const editItem = { ...item, status: 'edit' };
     this.setState(({ todos }) => {
       return {
         todos: [...todos.slice(0, idx), editItem, ...todos.slice(idx + 1)],
@@ -90,7 +86,7 @@ export default class App extends Component {
     e.preventDefault();
     const idx = this.state.todos.findIndex((el) => el.id === id);
     const item = this.state.todos[idx];
-    const editItem = { ...item, label: text, status: "" };
+    const editItem = { ...item, label: text, status: '' };
     this.setState(({ todos }) => {
       return {
         todos: [...todos.slice(0, idx), editItem, ...todos.slice(idx + 1)],
