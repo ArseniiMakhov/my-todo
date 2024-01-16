@@ -42,7 +42,6 @@
     ]
   },
   "devDependencies": {
-    "@babel/preset-react": "^7.23.3",
     "babel-eslint": "^10.1.0",
     "eslint": "^8.56.0",
     "eslint-config-airbnb": "^19.0.4",
@@ -57,6 +56,10 @@
     "prettier": "^3.2.2"
   },
   "lint-staged": {
-    "*.{js, jsx}": ["npm run lint:fix", "npm run format", "git add"]
+    "*.{js, jsx}": [
+      "npm run lint:fix",
+      "npm run format",
+      "git add"
+    ]
   }
 }
