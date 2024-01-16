@@ -3,7 +3,7 @@ import { Component } from 'react';
 
 import Footer from '../Footer';
 import TaskList from '../TaskList';
-import NewTaskForm from '../NewTaskForm';  
+import NewTaskForm from '../NewTaskForm';
 
 import './App.css';
 
@@ -57,13 +57,13 @@ export default class App extends Component {
   };
 
   todoFilter = (items, status) => {
-    if(status === 'all') {
+    if (status === 'all') {
       return items;
     }
-    if(status === 'active') {
+    if (status === 'active') {
       return items.filter((el) => !el.done);
     }
-    if(status === 'done') {
+    if (status === 'done') {
       return items.filter((el) => el.done);
     }
     return items;
