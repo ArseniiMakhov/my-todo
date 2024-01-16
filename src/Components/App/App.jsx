@@ -57,16 +57,16 @@ export default class App extends Component {
   };
 
   todoFilter = (items, status) => {
-    switch (status) {
-      case 'all':
-        return items;
-      case 'active':
-        return items.filter((el) => !el.done);
-      case 'done':
-        return items.filter((el) => el.done);
-      default:
-        return items;
+    if(status === 'all') {
+      return items;
     }
+    if(status === 'active') {
+      return items.filter((el) => !el.done);
+    }
+    if(status === 'done') {
+      return items.filter((el) => el.done);
+    }
+    return items;
   };
 
   clearCompleted = () => {
