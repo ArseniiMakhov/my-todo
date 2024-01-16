@@ -1,4 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { Component } from 'react';
+
 import Footer from '../Footer';
 import TaskList from '../TaskList';
 import NewTaskForm from '../NewTaskForm';
