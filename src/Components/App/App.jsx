@@ -55,7 +55,7 @@ export default class App extends Component {
   };
 
   todoFilter = (items, status) => {
-  switch (status) {
+    switch (status) {
     case 'all':
       return items;
     case 'active':
@@ -64,7 +64,7 @@ export default class App extends Component {
       return items.filter((el) => el.done);
     default:
       return items;
-  }
+    }
   };
 
   clearCompleted = () => {
