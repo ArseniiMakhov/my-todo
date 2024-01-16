@@ -1,5 +1,13 @@
 import React from 'react';
 
+TaskList.propTypes = {
+  todos: PropTypes.arrayOf(PropTypes.object),
+  onDeleted: PropTypes.func,
+  onToggleDone: PropTypes.func,
+  onEditClick: PropTypes.func,
+  onEdit: PropTypes.func,
+};
+
 import Task from '../Task/Task';
 
 import './TaskList.css';
@@ -31,14 +39,6 @@ TaskList.defaultProps = {
   onToggleDone: () => {},
   onEditClick: () => {},
   onEdit: () => {},
-};
-
-TaskList.propTypes = {
-  todos: PropTypes.arrayOf(PropTypes.object),
-  onDeleted: PropTypes.func,
-  onToggleDone: PropTypes.func,
-  onEditClick: PropTypes.func,
-  onEdit: PropTypes.func,
 };
 
 export default TaskList;
