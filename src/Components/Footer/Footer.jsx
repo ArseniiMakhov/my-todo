@@ -1,7 +1,5 @@
 import React from 'react';
-
 import PropTypes from 'prop-types';
-
 import TaskFilter from '../TasksFilter';
 
 import './Footer.css';
