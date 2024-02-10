@@ -9,7 +9,21 @@ export default class Task extends Component {
   };
 
   render() {
-    const { label, onDeleted, done, onToggleDone, created, status, onEditClick, onEdit, id } = this.props;
+    const {
+      label,
+      onDeleted,
+      done,
+      onToggleDone,
+      created,
+      status,
+      onEditClick,
+      onEdit,
+      id,
+      min,
+      sec,
+      timerPlay,
+      timerPause,
+    } = this.props;
     const timer = formatDistanceToNow(created, {
       addSuffix: true,
       includeSeconds: true,
@@ -30,10 +44,18 @@ export default class Task extends Component {
           <div className="view">
             <input className="toggle" type="checkbox" onChange={onToggleDone} checked={isChecked} />
             <label>
-              <span className="description" onClick={onToggleDone}>
+              <span className="title" onClick={onToggleDone}>
                 {label}
               </span>
-              <span className="created">{`created ${timer}`}</span>
+              <span className="description">
+                <button className="icon icon-play" onClick={() => timerPlay(id)} />
+                <button className="icon icon-pause" onClick={() => timerPause(id)} />
+                <span>
+                  &nbsp; &nbsp;
+                  {min < 10 ? `0${min}` : min}:{sec < 10 ? `0${sec}` : sec}
+                </span>
+              </span>
+              <span className="description">{`created ${timer}`}</span>
             </label>
             <button className="icon icon-edit" onClick={onEditClick}></button>
             <button className="icon icon-destroy" onClick={onDeleted}></button>

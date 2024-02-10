@@ -1,5 +1,4 @@
-import React from 'react';
-import { Component } from 'react';
+import React, { Component } from 'react';
 
 import Footer from '../Footer';
 import TaskList from '../TaskList';
@@ -10,22 +9,26 @@ import './App.css';
 export default class App extends Component {
   maxId = 1;
   state = {
-    todos: [this.createTodoItem('1'), this.createTodoItem('2'), this.createTodoItem('3')],
+    todos: [],
     filter: 'all',
   };
 
-  createTodoItem(label) {
+  createTodoItem(label, min, sec) {
     return {
       label,
       done: false,
       id: this.maxId++,
       created: new Date(),
       status: '',
+      min,
+      sec,
+      intervalID: 0,
+      timerPlay: false,
     };
   }
 
-  addItem = (text) => {
-    const newItem = this.createTodoItem(text);
+  addItem = (text, min, sec) => {
+    const newItem = this.createTodoItem(text, min, sec);
     this.setState(({ todos }) => {
       return {
         todos: [...todos, newItem],
@@ -39,6 +42,57 @@ export default class App extends Component {
       const newTodos = [...todos.slice(0, idx), ...todos.slice(idx + 1)];
       return { todos: newTodos };
     });
+  };
+
+  timer = (id) => {
+    let newItem;
+    const idx = this.state.todos.findIndex((el) => el.id === id);
+    const oldItem = this.state.todos[idx];
+
+    if (Number(oldItem.sec) > 0) {
+      newItem = { ...oldItem, timerPlay: true, sec: oldItem.sec - 1 };
+    }
+    if (Number(oldItem.sec) === 0 && Number(oldItem.min) > 0) {
+      newItem = { ...oldItem, min: oldItem.min - 1, sec: 59 };
+    }
+    if (Number(oldItem.min) === 0 && Number(oldItem.sec) === 1) {
+      clearInterval(oldItem.intervalID);
+    }
+    this.setState(({ todos }) => {
+      return {
+        todos: [...todos.slice(0, idx), newItem, ...todos.slice(idx + 1)],
+      };
+    });
+  };
+
+  timerPlay = (id) => {
+    const idx = this.state.todos.findIndex((el) => el.id === id);
+    const oldItem = this.state.todos[idx];
+    if (oldItem.timerPlay) {
+      return;
+    } else {
+      const intervalID = setInterval(() => this.timer(id), 200);
+      const newItem = { ...oldItem, intervalID };
+      this.setState(({ todos }) => {
+        return {
+          todos: [...todos.slice(0, idx), newItem, ...todos.slice(idx + 1)],
+        };
+      });
+    }
+  };
+
+  timerPause = (id) => {
+    const idx = this.state.todos.findIndex((el) => el.id === id);
+    const oldItem = this.state.todos[idx];
+    if (oldItem.sec) {
+      const newItem = { ...oldItem, timerPlay: false };
+      clearInterval(oldItem.intervalID);
+      this.setState(({ todos }) => {
+        return {
+          todos: [...todos.slice(0, idx), newItem, ...todos.slice(idx + 1)],
+        };
+      });
+    }
   };
 
   onToggleDone = (id) => {
@@ -115,6 +169,8 @@ export default class App extends Component {
             onToggleDone={this.onToggleDone}
             onEditClick={this.onEditClick}
             onEdit={this.onEdit}
+            timerPlay={this.timerPlay}
+            timerPause={this.timerPause}
           />
           <Footer
             toDo={todoCount}
