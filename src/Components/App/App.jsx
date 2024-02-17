@@ -71,7 +71,7 @@ export default class App extends Component {
     if (oldItem.timerPlay) {
       return;
     } else {
-      const intervalID = setInterval(() => this.timer(id), 200);
+      const intervalID = setInterval(() => this.timer(id), 1000);
       const newItem = { ...oldItem, intervalID };
       this.setState(({ todos }) => {
         return {
