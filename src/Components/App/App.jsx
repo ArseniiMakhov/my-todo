@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 
 import Footer from '../Footer';
 import TaskList from '../TaskList';
@@ -6,111 +6,53 @@ import NewTaskForm from '../NewTaskForm';
 
 import './App.css';
 
-export default class App extends Component {
-  maxId = 1;
-  state = {
-    todos: [],
-    filter: 'all',
-  };
+const App = () => {
+  const [todos, setTodos] = useState([]);
+  const [filter, setFilter] = useState();
 
-  createTodoItem(label, min, sec) {
-    return {
-      label,
-      done: false,
-      id: this.maxId++,
-      created: new Date(),
-      status: '',
-      min,
-      sec,
-      intervalID: 0,
-      timerPlay: false,
-    };
-  }
-
-  addItem = (text, min, sec) => {
-    const newItem = this.createTodoItem(text, min, sec);
-    this.setState(({ todos }) => {
-      return {
-        todos: [...todos, newItem],
-      };
-    });
-  };
-
-  deleteItem = (id) => {
-    this.setState(({ todos }) => {
-      const idx = todos.findIndex((el) => el.id === id);
-      const newTodos = [...todos.slice(0, idx), ...todos.slice(idx + 1)];
-      return { todos: newTodos };
-    });
-  };
-
-  timer = (id) => {
+  const timing = (id, min, sec) => {
     let newItem;
-    const idx = this.state.todos.findIndex((el) => el.id === id);
-    const oldItem = this.state.todos[idx];
+    const idx = todos.findIndex((el) => el.id === id);
+    const oldItem = todos[idx];
 
-    if (Number(oldItem.sec) > 0) {
-      newItem = { ...oldItem, timerPlay: true, sec: oldItem.sec - 1 };
+    if (Number(sec) > 0) {
+      newItem = { ...oldItem, timerPlay: true, sec: sec - 1 };
     }
-    if (Number(oldItem.sec) === 0 && Number(oldItem.min) > 0) {
-      newItem = { ...oldItem, min: oldItem.min - 1, sec: 59 };
+    if (Number(sec) === 0 && Number(min) > 0) {
+      newItem = { ...oldItem, timerPlay: true, min: min - 1, sec: 59 };
     }
-    if (Number(oldItem.min) === 0 && Number(oldItem.sec) === 1) {
+    if (Number(min) === 0 && Number(sec) === 1) {
       clearInterval(oldItem.intervalID);
     }
-    this.setState(({ todos }) => {
-      return {
-        todos: [...todos.slice(0, idx), newItem, ...todos.slice(idx + 1)],
-      };
-    });
+    setTodos([...todos.slice(0, idx), newItem, ...todos.slice(idx + 1)]);
+    console.log(newItem);
   };
 
-  timerPlay = (id) => {
-    const idx = this.state.todos.findIndex((el) => el.id === id);
-    const oldItem = this.state.todos[idx];
+  const timerPlay = (id, min, sec) => {
+    const idx = todos.findIndex((el) => el.id === id);
+    const oldItem = todos[idx];
+
     if (oldItem.timerPlay) {
       return;
     } else {
-      const intervalID = setInterval(() => this.timer(id), 1000);
+      const intervalID = setInterval(() => timing(id, min, sec), 500);
       const newItem = { ...oldItem, intervalID };
-      this.setState(({ todos }) => {
-        return {
-          todos: [...todos.slice(0, idx), newItem, ...todos.slice(idx + 1)],
-        };
-      });
+      setTodos([...todos.slice(0, idx), newItem, ...todos.slice(idx + 1)]);
     }
   };
 
-  timerPause = (id) => {
-    const idx = this.state.todos.findIndex((el) => el.id === id);
-    const oldItem = this.state.todos[idx];
-    if (oldItem.sec) {
+  const timerPause = (id, sec) => {
+    const idx = todos.findIndex((el) => el.id === id);
+    const oldItem = todos[idx];
+
+    if (sec) {
       const newItem = { ...oldItem, timerPlay: false };
       clearInterval(oldItem.intervalID);
-      this.setState(({ todos }) => {
-        return {
-          todos: [...todos.slice(0, idx), newItem, ...todos.slice(idx + 1)],
-        };
-      });
+      setTodos([...todos.slice(0, idx), newItem, ...todos.slice(idx + 1)]);
     }
   };
 
-  onToggleDone = (id) => {
-    const idx = this.state.todos.findIndex((el) => el.id === id);
-    const oldItem = this.state.todos[idx];
-    const newItem = { ...oldItem, done: !oldItem.done };
-    this.setState(({ todos }) => {
-      return {
-        todos: [...todos.slice(0, idx), newItem, ...todos.slice(idx + 1)],
-      };
-    });
-  };
-
-  onFilterChange = (filter) => {
-    this.setState({ filter });
-  };
-
-  todoFilter = (items, status) => {
+  const todoFilter = (items, status) => {
     if (status === 'all') {
       return items;
     }
@@ -123,63 +65,20 @@ export default class App extends Component {
     return items;
   };
 
-  clearCompleted = () => {
-    const completed = this.state.todos.filter((el) => el.done);
-    completed.map((el) => this.deleteItem(el.id));
-  };
+  const items = todoFilter(todos, filter);
 
-  onEditClick = (id) => {
-    const idx = this.state.todos.findIndex((el) => el.id === id);
-    const item = this.state.todos[idx];
-    const editItem = { ...item, status: 'edit' };
-    this.setState(({ todos }) => {
-      return {
-        todos: [...todos.slice(0, idx), editItem, ...todos.slice(idx + 1)],
-      };
-    });
-  };
-
-  onEdit = (e, id, text) => {
-    e.preventDefault();
-    const idx = this.state.todos.findIndex((el) => el.id === id);
-    const item = this.state.todos[idx];
-    const editItem = { ...item, label: text, status: '' };
-    this.setState(({ todos }) => {
-      return {
-        todos: [...todos.slice(0, idx), editItem, ...todos.slice(idx + 1)],
-      };
-    });
-  };
-
-  render() {
-    const doneCount = this.state.todos.filter((el) => el.done).length;
-    const todoCount = this.state.todos.length - doneCount;
-    const items = this.todoFilter(this.state.todos, this.state.filter);
-
-    return (
-      <section className="todoapp">
-        <header className="header">
-          <h1>MyTodo</h1>
-          <NewTaskForm onItemAdded={this.addItem} />
-        </header>
-        <section className="main">
-          <TaskList
-            todos={items}
-            onDeleted={this.deleteItem}
-            onToggleDone={this.onToggleDone}
-            onEditClick={this.onEditClick}
-            onEdit={this.onEdit}
-            timerPlay={this.timerPlay}
-            timerPause={this.timerPause}
-          />
-          <Footer
-            toDo={todoCount}
-            onFilterChange={this.onFilterChange}
-            filter={this.state.filter}
-            clearCompleted={this.clearCompleted}
-          />
-        </section>
+  return (
+    <section className="todoapp">
+      <header className="header">
+        <h1>MyTodo</h1>
+        <NewTaskForm setTodos={setTodos} />
+      </header>
+      <section className="main">
+        <TaskList todos={items} setTodos={setTodos} timerPlay={timerPlay} timerPause={timerPause} />
+        <Footer todos={todos} setFilter={setFilter} setTodos={setTodos} />
       </section>
-    );
-  }
-}
+    </section>
+  );
+};
+
+export default App;

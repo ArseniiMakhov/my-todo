@@ -1,101 +1,122 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import './Task.css';
 import { formatDistanceToNow } from 'date-fns';
 import PropTypes from 'prop-types';
 
-export default class Task extends Component {
-  state = {
-    value: this.props.label,
+import { Timer } from '../Timer/Timer';
+
+const Task = ({ todos, setTodos, label, done, created, status, id, min, sec, timerPoint, out }) => {
+  const [value, setValue] = useState(label);
+
+  const onEdit = (e, id, text) => {
+    e.preventDefault();
+    const idx = todos.findIndex((el) => el.id === id);
+    const item = todos[idx];
+    const editItem = { ...item, label: text, status: '' };
+    setTodos((todos) => [...todos.slice(0, idx), editItem, ...todos.slice(idx + 1)]);
   };
 
-  render() {
-    const {
-      label,
-      onDeleted,
-      done,
-      onToggleDone,
-      created,
-      status,
-      onEditClick,
-      onEdit,
-      id,
-      min,
-      sec,
-      timerPlay,
-      timerPause,
-    } = this.props;
-    const timer = formatDistanceToNow(created, {
-      addSuffix: true,
-      includeSeconds: true,
+  const onEditClick = (id) => {
+    const idx = todos.findIndex((el) => el.id === id);
+    const item = todos[idx];
+    const editItem = { ...item, status: 'edit' };
+    setTodos((todos) => [...todos.slice(0, idx), editItem, ...todos.slice(idx + 1)]);
+  };
+
+  const deleteItem = (id) => {
+    setTodos((todos) => {
+      const idx = todos.findIndex((el) => el.id === id);
+      const newTodos = [...todos.slice(0, idx), ...todos.slice(idx + 1)];
+      return newTodos;
     });
-    let classNames = '';
-    let isChecked = '';
+  };
+
+  const onToggleDone = (id) => {
+    const idx = todos.findIndex((el) => el.id === id);
+    const oldItem = todos[idx];
+    const newItem = { ...oldItem, done: !oldItem.done };
+    setTodos((todos) => [...todos.slice(0, idx), newItem, ...todos.slice(idx + 1)]);
+  };
+
+  function renderTimer() {
+    if (out) {
+      return <span className="description">Out of time</span>;
+    }
+
     if (done) {
-      classNames += ' completed';
-      isChecked += 'checked';
-    }
-    if (status) {
-      classNames += ' editing';
+      return <span className="description">Complited</span>;
     }
 
-    return (
-      <li className={classNames}>
-        {status === '' && (
-          <div className="view">
-            <input className="toggle" type="checkbox" onChange={onToggleDone} checked={isChecked} />
-            <label>
-              <span className="title" onClick={onToggleDone}>
-                {label}
-              </span>
-              <span className="description">
-                <button className="icon icon-play" onClick={() => timerPlay(id)} />
-                <button className="icon icon-pause" onClick={() => timerPause(id)} />
-                <span>
-                  &nbsp; &nbsp;
-                  {min < 10 ? `0${min}` : min}:{sec < 10 ? `0${sec}` : sec}
-                </span>
-              </span>
-              <span className="description">{`created ${timer}`}</span>
-            </label>
-            <button className="icon icon-edit" onClick={onEditClick}></button>
-            <button className="icon icon-destroy" onClick={onDeleted}></button>
-          </div>
-        )}
-
-        {status === 'edit' && (
-          <form onSubmit={(e) => onEdit(e, id, this.state.value)}>
-            <input
-              type="text"
-              className="edit"
-              value={this.state.value}
-              onChange={(e) => this.setState({ value: e.target.value })}
-            />
-          </form>
-        )}
-      </li>
-    );
+    return <Timer min={min} sec={sec} done={done} id={id} todos={todos} setTodos={setTodos} timerPoint={timerPoint} />;
   }
 
-  static defaultProps = {
-    label: '',
-    onDeleted: () => {},
-    done: false,
-    onToggleDone: () => {},
-    created: new Date(),
-    status: '',
-    onEditClick: () => {},
-    onEdit: () => {},
-  };
+  const createTime = formatDistanceToNow(created, {
+    addSuffix: true,
+    includeSeconds: true,
+  });
 
-  static propTypes = {
-    label: PropTypes.string,
-    onDeleted: PropTypes.func,
-    done: PropTypes.bool,
-    onToggleDone: PropTypes.func,
-    created: PropTypes.object,
-    status: PropTypes.string,
-    onEditClick: PropTypes.func,
-    onEdit: PropTypes.func,
-    id: PropTypes.number,
-  };
-}
+  let classNames = '';
+  let isChecked = '';
+
+  if (done) {
+    classNames += ' completed';
+    isChecked += 'checked';
+  }
+
+  if (status) {
+    classNames += ' editing';
+  }
+
+  return (
+    <li className={classNames}>
+      {status === '' && (
+        <div className="view">
+          <input className="toggle" type="checkbox" onChange={() => onToggleDone(id)} checked={isChecked} />
+          <label>
+            <span className="title">{label}</span>
+            {renderTimer()}
+            <span className="description">{`created ${createTime}`}</span>
+          </label>
+          <button type="button" className="icon icon-edit" onClick={() => onEditClick(id)}></button>
+          <button type="button" className="icon icon-destroy" onClick={() => deleteItem(id)}></button>
+        </div>
+      )}
+
+      {status === 'edit' && (
+        <form onSubmit={(e) => onEdit(e, id, value)}>
+          <input type="text" className="edit" value={value} onChange={(e) => setValue(e.target.value)} />
+        </form>
+      )}
+    </li>
+  );
+};
+
+Task.defaultProps = {
+  todos: [],
+  setTodos: () => {},
+  label: '',
+  done: false,
+  created: new Date(),
+  status: '',
+  id: 0,
+  min: 59,
+  sec: 59,
+  timerPoint: null,
+  out: false,
+};
+
+Task.propTypes = {
+  todos: PropTypes.arrayOf(PropTypes.object),
+  setTodos: PropTypes.func,
+  label: PropTypes.string,
+  done: PropTypes.bool,
+  created: PropTypes.object,
+  status: PropTypes.string,
+  id: PropTypes.number,
+  min: PropTypes.number,
+  sec: PropTypes.number,
+  timerPoint: PropTypes.number,
+  out: PropTypes.bool,
+};
+
+export default Task;

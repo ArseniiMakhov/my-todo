@@ -1,4 +1,5 @@
-.new-todo, .new-todo-form .new-todo-form__timer,
+.new-todo,
+.new-todo-form .new-todo-form__timer,
 .edit {
   position: relative;
   margin: 0;
@@ -16,7 +17,8 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.new-todo, .new-todo-form .new-todo-form__timer {
+.new-todo,
+.new-todo-form .new-todo-form__timer {
   padding: 16px 16px 16px 60px;
   border: none;
   background: rgba(0, 0, 0, 0.003);
@@ -29,10 +31,10 @@
 }
 
 .new-todo {
-	width: 70%;
+  width: 70%;
 }
 
 .new-todo-form .new-todo-form__timer {
-	width: 15%;
-	padding-left: 16px;
+  width: 15%;
+  padding-left: 16px;
 }

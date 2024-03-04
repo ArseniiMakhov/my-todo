@@ -1,37 +1,49 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import './TaskFilter.css';
 import PropTypes from 'prop-types';
 
-export default class TaskFilter extends Component {
-  buttons = [
-    { name: 'all', label: 'All' },
-    { name: 'active', label: 'Active' },
-    { name: 'done', label: 'Completed' },
-  ];
+const TaskFilter = ({ setFilter }) => {
+  const [buttons, setButtons] = useState([
+    { name: 'all', label: 'All', isActive: true },
+    { name: 'active', label: 'Active', isActive: false },
+    { name: 'done', label: 'Completed', isActive: false },
+  ]);
 
-  render() {
-    const { filter, onFilterChange } = this.props;
-    const buttons = this.buttons.map(({ name, label }) => {
-      const isActive = filter === name;
-      const clazz = isActive ? 'selected' : '';
-      return (
-        <li key={name}>
-          <button className={clazz} onClick={() => onFilterChange(name)}>
-            {label}
-          </button>
-        </li>
-      );
+  const onFilterChange = (filter) => {
+    setButtons((buttons) => {
+      return buttons.map((el) => {
+        if (el.name === filter) {
+          return { ...el, isActive: true };
+        } else {
+          return { ...el, isActive: false };
+        }
+      });
     });
-    return <ul className="filters">{buttons}</ul>;
-  }
-
-  static defaultProps = {
-    filter: 'all',
-    onFilterChange: () => {},
+    setFilter(filter);
   };
 
-  static propTypes = {
-    filter: PropTypes.string,
-    onFilterChange: PropTypes.func,
-  };
-}
+  const btns = buttons.map(({ name, label, isActive }) => {
+    const clazz = isActive ? 'selected' : '';
+    return (
+      <li key={name}>
+        <button type="button" className={clazz} onClick={() => onFilterChange(name)}>
+          {label}
+        </button>
+      </li>
+    );
+  });
+
+  return <ul className="filters">{btns}</ul>;
+};
+
+TaskFilter.defaultProps = {
+  filter: 'all',
+  onFilterChange: () => {},
+};
+
+TaskFilter.propTypes = {
+  filter: PropTypes.string,
+  onFilterChange: PropTypes.func,
+};
+
+export default TaskFilter;
